@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nasa_backend
+
+    ports:
+      - "8000:8000"
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./backend:/app
+      - ./data:/data
+
+    depends_on:
+      - postgres
+
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+
+    container_name: nasa_postgres
+
+    environment:
+      POSTGRES_USER: nasa_user
+      POSTGRES_PASSWORD: nasa_password
+      POSTGRES_DB: nasa_earth_detective
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+
+    container_name: nasa_pgadmin
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: rachidmukwegnalassani@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: 1234
+
+    ports:
+      - "5050:80"
+
+    depends_on:
+      - postgres
+
+    restart: unless-stopped
+
+volumes:
+  postgres_data: 
