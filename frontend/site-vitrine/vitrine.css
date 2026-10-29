@@ -1,0 +1,273 @@
+/* --- RESET ET DESIGN DE FOND GLOBAL (TECH DEGRADÉ) --- */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    background-color: #0f172a; /* Bleu nuit profond */
+    color: #f8fafc;
+    scroll-behavior: smooth;
+}
+
+/* --- HEADER ACCROCHÉ ET HORIZONTAL --- */
+.vitrine-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 15px 40px;
+    background-color: #1e293b !important; /* Gris-bleu foncé */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    position: sticky; 
+    top: 0;
+    z-index: 1000;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vitrine-logo-img {
+    height: 45px !important;
+    width: auto !important;
+    object-fit: contain;
+}
+
+.vitrine-logo-text {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #00bcd4; /* Accentuation Cyan */
+    letter-spacing: 0.5px;
+}
+
+.navigation {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 30px;
+    margin-left: auto; 
+    margin-right: 40px;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: #94a3b8; 
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.navigation a:hover {
+    color: #ffffff;
+}
+
+.btn-cta {
+    background-color: #00bcd4;
+    color: #0f172a !important;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+}
+
+.btn-cta:hover {
+    background-color: #0097a7;
+}
+
+/* --- CONFIGURATION DES SECTIONS --- */
+section {
+    padding: 100px 40px;
+    text-align: center;
+}
+
+section h2 {
+    font-size: 2.4rem;
+    color: #ffffff;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+/* --- 1. SECTION ACCUEIL (HERO) --- */
+.hero-section {
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    padding: 130px 40px;
+}
+
+.hero-section h1 {
+    font-size: 3.4rem;
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.hero-section p {
+    font-size: 1.25rem;
+    color: #94a3b8;
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    line-height: 1.6;
+}
+
+.btn-main {
+    display: inline-block;
+    background-color: #10b981; 
+    color: white;
+    padding: 14px 30px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.btn-main:hover {
+    background-color: #059669;
+    transform: scale(1.02);
+}
+
+/* --- 2. SECTION SERVICES --- */
+.services-section {
+    background-color: #111827; 
+}
+
+.services-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.card {
+    background: #1f2937;
+    padding: 35px 25px;
+    border-radius: 8px;
+    border: 1px solid #374151;
+    max-width: 300px;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    border-color: #4b5563;
+}
+
+.card h3 {
+    color: #00bcd4;
+    margin-top: 0;
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+}
+
+.card p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* --- 3. SECTION À PROPOS --- */
+.about-section {
+    background-color: #0f172a;
+}
+
+.about-content {
+    max-width: 800px;
+    margin: 0 auto;
+    color: #94a3b8;
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+/* --- 4. SECTION CONTACT --- */
+.contact-section {
+    background-color: #111827;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 550px;
+    margin: 40px auto 0 auto;
+    gap: 15px;
+}
+
+.contact-form input, .contact-form textarea {
+    padding: 14px;
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 6px;
+    color: white;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.contact-form input:focus, .contact-form textarea:focus {
+    border-color: #00bcd4;
+}
+
+.contact-form button {
+    background-color: #00bcd4;
+    color: #0f172a;
+    border: none;
+    padding: 14px;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.contact-form button:hover {
+    background-color: #0097a7;
+}
+
+/* --- FOOTER ET DROITS D'AUTEUR --- */
+.vitrine-footer {
+    background-color: #030712; 
+    padding: 50px 40px 25px 40px;
+    text-align: center;
+    border-top: 1px solid #1f2937;
+}
+
+.footer-grid {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto 40px auto;
+    text-align: left;
+}
+
+.footer-col h4 {
+    color: #ffffff;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.footer-col p, .footer-col a {
+    color: #64748b;
+    font-size: 0.9rem;
+    text-decoration: none;
+    margin: 5px 0;
+    display: block;
+}
+
+.footer-col a:hover {
+    color: #00bcd4;
+}
+
+.sub-footer {
+    margin-top: 50px; 
+    padding-top: 25px;
+    border-top: 1px solid #1f2937; 
+    color: #475569;
+    font-size: 0.8rem;
+}

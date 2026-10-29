@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARTEMIS GEOMATIC IA - Site Officiel</title>
+    
+    <style>
+        /* --- RESET ET DESIGN DE FOND GLOBAL (TECH DEGRADÉ) --- */
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            background-color: #0f172a; /* Bleu nuit profond */
+            color: #f8fafc;
+            scroll-behavior: smooth; /* Glissement fluide lors d'un clic sur le menu */
+        }
+
+        /* --- HEADER ACCROCHÉ ET HORIZONTAL (ALIGNEMENT DROITE PARFAIT) --- */
+        .vitrine-header {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 15px 40px;
+            background-color: #1e293b !important; /* Gris-bleu foncé isolant le menu */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            position: sticky; 
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* MAÎTRISE STRICTE DE LA DIMENSION DU LOGO */
+        .vitrine-logo-img {
+            height: 45px !important;
+            width: auto !important;
+            object-fit: contain;
+        }
+
+        .vitrine-logo-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #3b82f6; 
+            letter-spacing: 0.5px;
+        }
+
+        /* LA BARRE DE NAVIGATION COMMUNICANTE ET HORIZONTALE */
+        .navigation {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 30px;
+            margin-left: auto; /* Pousse toute la barre vers le coin droit latéral */
+            margin-right: 40px;
+        }
+
+        .navigation a {
+            text-decoration: none;
+            color: #94a3b8; 
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .navigation a:hover {
+            color: #ffffff; /* Brillance blanche au survol */
+        }
+
+        /* BOUTON D'UNION VERS LE DASHBOARD DE L'IA */
+        .btn-cta {
+            background-color: #3b82f6;
+            color: #ffffff !important;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .btn-cta:hover {
+            background-color: #2563eb;
+        }
+
+        /* --- RÈGLES DE CONCEPTION DES SECTIONS --- */
+        section {
+            padding: 100px 40px;
+            text-align: center;
+        }
+
+        section h2 {
+            font-size: 2.4rem;
+            color: #ffffff;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        /* --- 1. CONFIGURATION SECTION ACCUEIL (HERO) --- */
+        .hero-section {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            padding: 130px 40px;
+        }
+
+        .hero-section h1 {
+            font-size: 3.4rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            line-height: 1.6;
+        }
+
+        .btn-main {
+            display: inline-block;
+            background-color: #10b981; /* Couleur Émeraude */
+            color: white;
+            padding: 14px 30px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .btn-main:hover {
+            background-color: #059669;
+            transform: scale(1.02);
+        }
+
+        /* --- 2. CONFIGURATION SECTION SERVICES (BLOCS SIG VECTEURS) --- */
+        .services-section {
+            background-color: #111827; 
+        }
+
+        .services-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: #1f2937;
+            padding: 35px 25px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            max-width: 300px;
+            text-align: left;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: #4b5563;
+        }
+
+        .card h3 {
+            color: #3b82f6;
+            margin-top: 0;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* --- 3. CONFIGURATION SECTION À PROPOS --- */
+        .about-section {
+            background-color: #0f172a;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        /* --- 4. CONFIGURATION SECTION CONTACT --- */
+        .contact-section {
+            background-color: #111827;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            max-width: 550px;
+            margin: 40px auto 0 auto;
+            gap: 15px;
+        }
+
+        .contact-form input, .contact-form textarea {
+            padding: 14px;
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .contact-form input:focus, .contact-form textarea:focus {
+            border-color: #3b82f6;
+        }
+
+        .contact-form button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-weight: bold;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .contact-form button:hover {
+            background-color: #2563eb;
+        }
+
+        /* --- LE BLOCK DE FOOTER AVEC RETARDEMENT DU SOUS-FOOTER --- */
+        .vitrine-footer {
+            background-color: #030712; 
+            padding: 50px 40px 25px 40px;
+            text-align: center;
+            border-top: 1px solid #1f2937;
+        }
+
+        .footer-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto 40px auto;
+            text-align: left;
+        }
+
+        .footer-col h4 {
+            color: #ffffff;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .footer-col p, .footer-col a {
+            color: #64748b;
+            font-size: 0.9rem;
+            text-decoration: none;
+            margin: 5px 0;
+            display: block;
+        }
+
+        .footer-col a:hover {
+            color: #3b82f6;
+        }
+
+        /* ISOLEMENT PROPRE ET COMPLET DE LA LIGNE SOUS-FOOTER DE DROITS D'AUTEUR */
+        .sub-footer {
+            margin-top: 50px; 
+            padding-top: 25px;
+            border-top: 1px solid #1f2937; 
+            color: #475569;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRE DE NAVIGATION DYNAMIQUE -->
+    <header class="vitrine-header">
+        <div class="logo-container">
+            <img src="artemis-logo.jpeg" alt="Logo" class="vitrine-logo-img">
+            <span class="vitrine-logo-text">ARTEMIS GEOMATIC IA</span>
+        </div>
+        
+        <!-- Toutes les navigations horizontales -->
+        <nav class="navigation">
+            <a href="#accueil">Accueil</a>
+            <a href="#services">Services</a>
+            <a href="#propos">À propos</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        
+        <a href="C:/Users/LENOVO/Documents/GitHub/ARTEMIS-GEOMATIC-AI/ARTEMIS app-dashboard/public/login.html" class="btn-hero">Accéder à l'application</a>
+    </header>
+
+    <!-- 1. SECTION ACCUEIL -->
+    <section id="accueil" class="hero-section">
+        <h1>Bienvenue chez ARTEMIS GEOMATIC AI</h1>
+        <p>Nous fournissons des solutions géomatiques avancées basées sur l'intelligence artificielle pour vos besoins en cartographie, télédétection et analyse spatiale.</p>
+        <a href="#services" class="btn-main">Découvrir nos services</a>
+    </section>
+
+    <!-- 2. SECTION SERVICES -->
+    <section id="services" class="services-section">
+        <h2>Nos Services Technologiques</h2>
+        <div class="services-grid">
+            <div class="card">
+                <h3>Analyse Satellitaire</h3>
+                <p>Traitement complet d'images matricielles et détection automatique des changements environnementaux par imagerie drone et satellite.</p>
+            </div>
+            <div class="card">
+                <h3>Cartographie IA</h3>
+                <p>Interprétation intelligente de vos fichiers vectoriels (Shapefiles, GeoJSON, KML) par notre modèle LLM spécialisé.</p>
+            </div>
+            <div class="card">
+                <h3>Bases de Données SIG</h3>
+                <p>Structuration et requêtage spatial avancé via PostgreSQL et l'extension PostGIS pour des performances optimales.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. SECTION À PROPOS -->
+    <section id="propos" class="about-section">
+        <h2>À propos du Projet</h2>
+        <div class="about-content">
+            <p>Développé dans le cadre d'études d'ingénierie et de géomatique, Artémis Geomatic IA est un pont technologique entre la puissance des grands modèles de langage et la précision des Systèmes d'Information Géographique (SIG). Notre objectif est de rendre l'analyse de données géospatiales accessible à tous via une interface de dialogue conversationnelle claire.</p>
+        </div>
+    </section>
+
+    <!-- 4. SECTION CONTACT -->
+    <section id="contact" class="contact-section">
+        <h2>Nous Contacter</h2>
+        <form class="contact-form" onsubmit="event.preventDefault(); alert('Votre message a bien été transmis à l\'équipe Artémis !');">
+            <input type="text" placeholder="Votre nom complet" required>
+            <input type="email" placeholder="Votre adresse e-mail" required>
+            <textarea placeholder="Décrivez votre projet SIG ou votre besoin d'analyse cartographique..." rows="5" required></textarea>
+            <button type="submit">Envoyer la requête</button>
+        </form>
+    </section>
+
+    <!-- FOOTER COMPLET AVEC LES SECTIONS ET LE SOUS-FOOTER DE DROITS D'AUTEUR REPOUSSÉ -->
+    <footer class="vitrine-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>Artémis SIG-IA</h4>
+                <p>Technologie spatiale et</p>
+                <p>Intelligence Artificielle.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Liens Rapides</h4>
+                <a href="#services">Nos Outils</a>
+                <a href="#propos">Le Projet</a>
+                <a href="#contact">Contactez-nous</a>
+            </div>
+            <div class="footer-col">
+                <h4>Technologies</h4>
+                <p>PostgreSQL / PostGIS</p>
+                <p>Ollama Python API</p>
+            </div>
+        </div>
+        
+        <!-- ISOLEMENT PROPRE ET COMPLET DE LA LIGNE SOUS-FOOTER TOUT EN BAS -->
+        <div class="sub-footer">
+            <p>&copy; 2026 Artémis Geomatic IA. Conçu par Rachid MUKWEGN ALASSANI pour NOVA TECH NUMERIC SYSTEMS. — Tous droits réservés.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

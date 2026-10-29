@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARTEMIS EARTH DETECTIVE - Site Officiel</title>
+    <!-- Liaison de la feuille de style externe propre -->
+    <link rel="stylesheet" href="vitrine.css">
+</head>
+<body>
+
+    <!-- BARRE DE NAVIGATION DYNAMIQUE -->
+    <header class="vitrine-header">
+        <div class="logo-container">
+            <img src="artemis-logo.png" alt="Logo" class="vitrine-logo-img">
+            <span class="vitrine-logo-text">ARTEMIS EARTH DETECTIVE</span>
+        </div>
+        
+        <nav class="navigation">
+            <a href="#accueil">Accueil</a>
+            <a href="#services">Services</a>
+            <a href="#propos">À propos</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        
+        <!-- Redirection vers le module d'accès de votre application déployée -->
+        <a href="./app-dashboard/dashboard.html" class="btn-cta">Accéder à l'application</a>
+    </header>
+
+    <!-- 1. SECTION ACCUEIL (HERO) -->
+    <section id="accueil" class="hero-section">
+        <h1>Bienvenue chez ARTEMIS EARTH DETECTIVE</h1>
+        <p>Nous fournissons des outils de surveillance environnementale avancés basés sur l'intelligence artificielle pour l'analyse des surfaces continentales, le suivi climatique et la télédétection spatiale.</p>
+        <a href="#services" class="btn-main">Découvrir nos services</a>
+    </section>
+
+    <!-- 2. SECTION SERVICES -->
+    <section id="services" class="services-section">
+        <h2>Nos Services Technologiques</h2>
+        <div class="services-grid">
+            <div class="card">
+                <h3>Télédétection & Végétation</h3>
+                <p>Suivi en temps réel du couvert végétal et des indices de déforestation par classification automatisée de rasters satellitaires haute résolution.</p>
+            </div>
+            <div class="card">
+                <h3>Moteur Prédictif Earth-IA</h3>
+                <p>Analyse prédictive de l'expansion urbaine et de la gestion des ressources hydriques au moyen de modèles de deep learning (YOLOv8 & U-Net).</p>
+            </div>
+            <div class="card">
+                <h3>Infrastructure Cloud SIG</h3>
+                <p>Centralisation et requêtage spatial ultra-performant sur base PostgreSQL/PostGIS, synchronisés via Supabase et vos API déployées sur Render.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. SECTION À PROPOS -->
+    <section id="propos" class="about-section">
+        <h2>À propos du Projet</h2>
+        <div class="about-content">
+            <p>Conçu à l'intersection des technologies spatiales et de l'intelligence artificielle contextuelle, Artémis Earth Detective unifie l'ingénierie logicielle cloud (Vercel, Render) avec la puissance analytique d'Ollama et de Supabase. Notre but est de décoder les mutations terrestres et environnementales majeures via des interfaces conversationnelles et visuelles intuitives.</p>
+        </div>
+    </section>
+
+    <!-- 4. SECTION CONTACT -->
+    <section id="contact" class="contact-section">
+        <h2>Nous Contacter</h2>
+        <form class="contact-form" onsubmit="event.preventDefault(); alert('Votre requête d\'analyse environnementale a été transmise avec succès à l\'équipe Artémis !');">
+            <input type="text" placeholder="Votre nom complet" required>
+            <input type="email" placeholder="Votre adresse e-mail" required>
+            <textarea placeholder="Décrivez votre projet d'étude ou vos besoins d'analyse en imagerie satellite..." rows="5" required></textarea>
+            <button type="submit">Envoyer la requête</button>
+        </form>
+    </section>
+
+    <!-- FOOTER ET DROITS D'AUTEUR -->
+    <footer class="vitrine-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>Artémis Earth Detective</h4>
+                <p>Surveillance de la Terre</p>
+                <p>& Intelligence Artificielle.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Écosystème Cloud</h4>
+                <a href="#services">Moteurs IA</a>
+                <a href="#propos">Objectifs</a>
+                <a href="#contact">Support Technique</a>
+            </div>
+            <div class="footer-col">
+                <h4>Technologies</h4>
+                <p>Supabase / Render / Vercel</p>
+                <p>PostgreSQL & PostGIS Spatial</p>
+            </div>
+        </div>
+        
+        <div class="sub-footer">
+            <p>&copy; Artémis Earth Detective. Conçu par Rachid MUKWEGN ALASSANI pour NASA SPACE App Challenge 2026. — Tous droits réservés.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
