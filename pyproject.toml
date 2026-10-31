@@ -14,7 +14,7 @@ dependencies = [
     "cryptography",
     "psycopg[binary]",
     "h5py",
-    "fastapi",
+    "fastapi[standard]",
     "uvicorn",
     "pandas",
     "numpy",
@@ -31,7 +31,9 @@ dependencies = [
     "plotly",
     "folium",
     "python-multipart",
-    "pydantic"
+    "pydantic",
+    "aiofiles>=25.1.0",
+    "fastapi[standard]"
 ]
 
 [tool.setuptools]
