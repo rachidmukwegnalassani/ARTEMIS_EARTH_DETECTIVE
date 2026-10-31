@@ -1,23 +1,20 @@
 # -*- coding: utf-8 -*-
+import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse 
-import os
+from fastapi.responses import FileResponse
 
-app = FastAPI(
-    title="ARTEMIS Earth Detective API",
-    version="1.0.0",
-    description="Moteur d'Intelligence Spatiale Autonome - NASA Space Apps"
-)
+app = FastAPI()
 
+# 1. Configurer le dossier pour vos fichiers statiques (CSS, JS, images)
+# Assurez-vous que le chemin pointe bien vers votre dossier "app-dashboard"
+app.mount("/static", StaticFiles(directory="frontend/app-dashboard"), name="static")
+
+# 2. Forcer la racine à charger l'interface visuelle (HTML)
 @app.get("/")
-async def read_root():
-    return {
-        "status": "online",
-        "project": "ARTEMIS",
-        "message": "Le serveur de l'IA est fonctionnel et connecté à Render !"
-    }
-
+def read_root():
+    # Ajustez le chemin selon l'emplacement exact de votre index.html
+    return FileResponse(os.path.join("frontend", "app-dashboard", "index.html"))
 # --- AJOUT DE LA PASSERELLE POUR LE DASHBOARD ---
 
 # Indique à Render le chemin vers le dossier frontend global pour charger les fichiers CSS/JS
