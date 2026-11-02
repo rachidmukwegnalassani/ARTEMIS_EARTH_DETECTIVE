@@ -230,3 +230,48 @@ function initAppEventListeners() {
     }
   });
 }
+// Fonction déclenchée lors du clic sur le bouton du tableau des Statistiques Globales
+async function triggerTableAnalysis() {
+    // 1. Récupération dynamique des données textuelles affichées dans votre tableau UI
+    const tableElement = document.getElementById("table-statistiques-globales");
+    if (!tableElement) return;
+
+    let headers = [];
+    let rows = [];
+
+    // Extraction des en-têtes (headers)
+    tableElement.querySelectorAll("th").forEach(th => headers.push(th.innerText.trim()));
+
+    // Extraction des lignes de données (rows)
+    tableElement.querySelectorAll("tbody tr").forEach(tr => {
+        let rowData = [];
+        tr.querySelectorAll("td").forEach(td => rowData.push(td.innerText.trim()));
+        if (rowData.length > 0) rows.push(rowData);
+    });
+
+    const tableDataPayload = { headers: headers, rows: rows };
+
+    // 2. Notification visuelle dans le Chat Artemis (Bas à droite)
+    appendUserMessageToChat("📊 [Demande d'analyse automatique du tableau statistique en cours...]");
+
+    // 3. Envoi de la requête à l'API FastAPI du backend
+    try {
+        const response = await fetch('/api/chat/analyze-dashboard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ui_state: { table_data: tableDataPayload },
+                user_message: "Analyse en détail les variables de ce tableau statistique. Fais ressortir les anomalies."
+            })
+        });
+
+        const data = await response.json();
+        
+        // 4. Affichage de la réponse scientifique d'Artemis dans la fenêtre du chat
+        appendAiResponseToChat(data.reply);
+
+    } catch (error) {
+        console.error("Erreur Artemis AI:", error);
+        appendAiResponseToChat("Désolé, Artemis n'a pas pu traiter le tableau suite à une erreur de connexion.");
+    }
+}

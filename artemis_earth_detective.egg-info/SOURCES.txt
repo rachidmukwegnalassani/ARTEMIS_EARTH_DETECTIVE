@@ -1,0 +1,11 @@
+LICENSE
+README.md
+pyproject.toml
+artemis_earth_detective.egg-info/PKG-INFO
+artemis_earth_detective.egg-info/SOURCES.txt
+artemis_earth_detective.egg-info/dependency_links.txt
+artemis_earth_detective.egg-info/requires.txt
+artemis_earth_detective.egg-info/top_level.txt
+backend/__init__.py
+backend/main.py
+data/_init_.py
