@@ -1,148 +1,30 @@
-<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Artemis Earth Detective IA</title>
-    <!-- Si votre CSS ne s'affiche pas avec le chemin ci-dessous, essayez d'enlever "/css" pour avoir directement "/static/style.css" -->
-    <link rel="stylesheet" href="/static/style.css" />
-  </head>
-  <body>
-    <div class="app-container">
-      <aside class="control-panel">
-        <header class="brand">
-          <img class="brand-logo" src="/static/assets/artemis-logo.png" alt="Artemis Earth Detective" />
-        </header>
+<div class="chat-input-area">
 
-        <section class="panel-section">
-          <h2>Variables scientifiques</h2>
+  <input
+    id="chat-input"
+    type="text"
+    placeholder="Posez une question ou demandez une analyse..."
+  />
 
-          <div class="form-group">
-            <label for="category-select">Catégorie</label>
-            <select id="category-select">
-              <option value="atmosphere">Atmosphère</option>
-              <option value="precipitations">Précipitations</option>
-              <option value="hydrologie">Hydrologie</option>
-              <option value="vegetation">Végétation</option>
-              <option value="landuse">Usage des sols</option>
-              <option value="cryosphere">Cryosphère</option>
-              <option value="oceans">Océans</option>
-              <option value="geodesie">Géodésie</option>
-            </select>
-          </div>
+  <button
+    id="chat-upload-btn"
+    type="button"
+  >
+    📎
+  </button>
 
-          <div class="form-group">
-            <label for="variable-select">Variable cible</label>
-            <select id="variable-select">
-              <option value="air_temperature">Air Temperature</option>
-              <option value="surface_temperature">Surface Temperature</option>
-              <option value="humidity">Humidity</option>
-              <option value="atmospheric_pressure">Atmospheric Pressure</option>
-              <option value="wind_speed">Wind Speed</option>
-              <option value="wind_direction">Wind Direction</option>
-              <option value="cloud_cover">Cloud Cover</option>
-              <option value="cloud_height">Cloud Height</option>
-              <option value="aerosols">Aerosols</option>
-              <option value="ozone">Ozone</option>
-              <option value="greenhouse_gases">Greenhouse Gases</option>
-            </select>
-          </div>
-        </section>
+  <button
+    id="chat-send-btn"
+    type="button"
+  >
+    Envoyer
+  </button>
 
-        <section class="panel-section">
-          <h2>Chargement des données</h2>
+  <input
+    id="chat-file-input"
+    type="file"
+    hidden
+    accept=".csv,.xlsx,.txt,.pdf,.json,.geojson,.nc,.hdf,.tif,.tiff"
+  />
 
-          <div class="form-group">
-            <label for="geo-file">Carte / raster / GeoJSON</label>
-            <input type="file" id="geo-file" accept=".nc,.geojson,.tiff,.tif,.shp,.json" />
-          </div>
-
-          <div class="form-group">
-            <label for="chart-file">Données graphiques</label>
-            <input type="file" id="chart-file" accept=".csv,.json" />
-          </div>
-
-          <div class="form-group">
-            <label for="stats-file">Données statistiques</label>
-            <input type="file" id="stats-file" accept=".csv,.xlsx" />
-          </div>
-        </section>
-
-        <button id="run-analysis-btn" class="btn-primary" type="button">
-          Exécuter l'analyse IA
-        </button>
-
-        <div class="dashboard-nav-back">
-          <!-- Correction de l'URL absolue vers Vercel avec le slash de fin obligatoire -->
-          <a href="https://artemisearthdetective-frontend.vercel.app/"class="btn-back-vitrine">
-            Retour au site vitrine
-          </a>
-        </div>
-      </aside>
-
-      <main class="map-area">
-        <div class="upper-workspace">
-          <section id="map-viewport" class="map-viewport" aria-label="Carte interactive">
-            <div class="map-placeholder">
-              <div class="map-icon">◎</div>
-              <p>Carte interactive du système Terre</p>
-            </div>
-          </section>
-
-          <aside class="chat-panel">
-            <header class="panel-header">
-              <h3>Chat Artemis</h3>
-            </header>
-
-            <div class="chat-messages" id="chat-messages">
-              <div class="message assistant">
-                Bonjour, je suis Artemis Earth Detective IA. Quelle variable souhaitez-vous analyser ?
-              </div>
-            </div>
-
-            <div class="chat-input-area">
-              <input id="chat-input" type="text" placeholder="Poser une question sur les modèles de la NASA..." />
-              <button id="chat-send-btn" type="button">Envoyer</button>
-            </div>
-          </aside>
-        </div>
-
-        <section class="results-dashboard-zone">
-          <header class="panel-header section-title-bar">
-            <h3>Tendances & analyses</h3>
-          </header>
-
-          <div class="results-container-layout">
-            <article class="result-box">
-              <h4>Graphiques & modélisations</h4>
-              <div id="chart-output" class="metric-placeholder-text">
-                En attente des courbes de tendances...
-              </div>
-            </article>
-
-            <article class="result-box">
-              <h4>Statistiques globales</h4>
-              <div id="metric-output" class="metric-placeholder-text">
-                Calcul des écarts et des moyennes...
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <footer class="bottom-panels">
-          <header class="panel-header">
-            <h3>Pipeline logs Python</h3>
-            <span class="status-indicator" id="engine-status">En ligne</span>
-          </header>
-
-          <div class="console-logs" id="console-logs">
-            <p class="log-info">[System] Artemis Pipeline Initialisé. En attente de traitement matriciel...</p>
-          </div>
-        </footer>
-      </main>
-    </div>
-
-    <!-- Si votre JS ne s'exécute pas, essayez d'enlever "/js" pour avoir directement "/static/app.js" -->
-    <script src="/static/app.js"></script>
-  </body>
-</html>
+</div>
