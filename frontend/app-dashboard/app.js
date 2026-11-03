@@ -26,6 +26,7 @@ const nasaVariables = {
 document.addEventListener("DOMContentLoaded", () => {
   initCategorySwitch();
   initAppEventListeners();
+  initUploadButton();
 });
 
 function initCategorySwitch() {
@@ -117,6 +118,27 @@ function setMapState(mode, text) {
   `;
 }
 
+function initUploadButton() {
+  const uploadBtn = document.getElementById('chat-upload-btn');
+  const fileInput = document.getElementById('chat-file-input');
+
+  if (!uploadBtn || !fileInput) {
+    return;
+  }
+
+  uploadBtn.addEventListener('click', () => {
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      const filename = e.target.files[0].name;
+      appendLog(`> Fichier selectionne pour le chat : ${filename}`, "info");
+      appendMessage("user", `<strong>Systeme :</strong> Fichier joint associe : ${filename}`);
+    }
+  });
+}
+
 function initAppEventListeners() {
   const runBtn = document.getElementById("run-analysis-btn");
   if (!runBtn) {
@@ -135,9 +157,9 @@ function initAppEventListeners() {
     appendLog(`> Ingestion de la variable : ${selectedVar}...`, "info");
 
     if (isMapData) {
-      setMapState("loading", "Traitement de la matrice géographique...");
+      setMapState("loading", "Traitement de la matrice geographique...");
     } else {
-      setMapState("default", "Données non cartographiques détectées.");
+      setMapState("default", "Donnees non cartographiques detectees.");
       appendLog("> [Pipeline] Format non-cartographique. Activation directe des modules graphiques et statistiques.", "info");
     }
 
@@ -160,30 +182,30 @@ function initAppEventListeners() {
       const data = await response.json();
 
       document.getElementById("metric-output").innerHTML = `
-        <p>Moyenne observée : <strong>${data.stats?.mean ?? "14.23"}</strong></p>
-        <p>Variance / Écart : <strong>${data.stats?.variance ?? "0.84"}</strong></p>
-        <p class="status-inline">Statut : <strong>Données indexées</strong></p>
+        <p>Moyenne observee : <strong>${data.stats?.mean ?? "14.23"}</strong></p>
+        <p>Variance / Ecart : <strong>${data.stats?.variance ?? "0.84"}</strong></p>
+        <p class="status-inline">Statut : <strong>Donnees indexees</strong></p>
       `;
 
       document.getElementById("chart-output").innerHTML = `
-        <p>${data.ai_expert_report || "Modélisation temporelle générée. Une tendance anormale est identifiée sur les cycles récents."}</p>
+        <p>${data.ai_expert_report || "Modelisation temporelle generee. Une tendance anormale est identifiee sur les cycles recents."}</p>
       `;
 
       if (isMapData) {
-        setMapState("success", "Matrice spatiale injectée sur la carte.");
+        setMapState("success", "Matrice spatiale injectee sur la carte.");
       }
 
-      appendLog("> [IA] Analyse terminée. Rapport envoyé à l'Assistant GPT.", "success");
+      appendLog("> [IA] Analyse terminee. Rapport envoye a l'Assistant GPT.", "success");
       appendMessage(
         "assistant",
-        `<strong>Artemis GPT :</strong> J'ai reçu les analyses graphiques et statistiques pour la variable <em>${selectedVar}</em>. Le rapport indique une corrélation stable mais des variations à analyser. Que souhaitez-vous que je vous explique en priorité ?`
+        `<strong>Artemis GPT :</strong> J'ai recu les analyses graphiques et statistiques pour la variable <em>${selectedVar}</em>. Le rapport indique une correlation stable mais des variations a analyser. Que souhaitez-vous que je vous explique en priorite ?`
       );
     } catch (error) {
       console.error(error);
-      appendLog("[Error] Problème lors du traitement de la donnée par l'API.", "error");
-      setMapState("default", "Le traitement a échoué, veuillez réessayer.");
-      document.getElementById("metric-output").innerHTML = "<p>Une erreur réseau ou backend est survenue.</p>";
-      document.getElementById("chart-output").innerHTML = "<p>Le rapport a été interrompu.</p>";
+      appendLog("[Error] Probleme lors du traitement de la donnee par l'API.", "error");
+      setMapState("default", "Le traitement a echoue, veuillez reessayer.");
+      document.getElementById("metric-output").innerHTML = "<p>Une erreur reseau ou backend est survenue.</p>";
+      document.getElementById("chart-output").innerHTML = "<p>Le rapport a ete interrompu.</p>";
     }
   });
 
@@ -215,7 +237,7 @@ function initAppEventListeners() {
       }
 
       const data = await response.json();
-      appendMessage("assistant", `<strong>Artemis :</strong> ${data.response || "Je n'ai pas pu générer de réponse."}`);
+      appendMessage("assistant", `<strong>Artemis :</strong> ${data.response || "Je n'ai pas pu generer de reponse."}`);
     } catch (error) {
       console.error(error);
       appendMessage("assistant", "<strong>Artemis :</strong> Une erreur est survenue lors de l'envoi du message.");
@@ -230,48 +252,41 @@ function initAppEventListeners() {
     }
   });
 }
-// Fonction déclenchée lors du clic sur le bouton du tableau des Statistiques Globales
+
 async function triggerTableAnalysis() {
-    // 1. Récupération dynamique des données textuelles affichées dans votre tableau UI
-    const tableElement = document.getElementById("table-statistiques-globales");
-    if (!tableElement) return;
+  const tableElement = document.getElementById("table-statistiques-globales");
+  if (!tableElement) return;
 
-    let headers = [];
-    let rows = [];
+  let headers = [];
+  let rows = [];
 
-    // Extraction des en-têtes (headers)
-    tableElement.querySelectorAll("th").forEach(th => headers.push(th.innerText.trim()));
+  tableElement.querySelectorAll("th").forEach(th => headers.push(th.innerText.trim()));
 
-    // Extraction des lignes de données (rows)
-    tableElement.querySelectorAll("tbody tr").forEach(tr => {
-        let rowData = [];
-        tr.querySelectorAll("td").forEach(td => rowData.push(td.innerText.trim()));
-        if (rowData.length > 0) rows.push(rowData);
+  tableElement.querySelectorAll("tbody tr").forEach(tr => {
+    let rowData = [];
+    tr.querySelectorAll("td").forEach(td => rowData.push(td.innerText.trim()));
+    if (rowData.length > 0) rows.push(rowData);
+  });
+
+  const tableDataPayload = { headers: headers, rows: rows };
+
+  appendMessage("user", "<strong>Systeme :</strong> [Demande d'analyse automatique du tableau statistique en cours...]");
+
+  try {
+    const response = await fetch('/api/chat/analyze-dashboard', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ui_state: { table_data: tableDataPayload },
+        user_message: "Analyse en detail les variables de ce tableau statistique. Fais ressortir les anomalies."
+      })
     });
 
-    const tableDataPayload = { headers: headers, rows: rows };
+    const data = await response.json();
+    appendMessage("assistant", `<strong>Artemis :</strong> ${data.reply}`);
 
-    // 2. Notification visuelle dans le Chat Artemis (Bas à droite)
-    appendUserMessageToChat("📊 [Demande d'analyse automatique du tableau statistique en cours...]");
-
-    // 3. Envoi de la requête à l'API FastAPI du backend
-    try {
-        const response = await fetch('/api/chat/analyze-dashboard', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                ui_state: { table_data: tableDataPayload },
-                user_message: "Analyse en détail les variables de ce tableau statistique. Fais ressortir les anomalies."
-            })
-        });
-
-        const data = await response.json();
-        
-        // 4. Affichage de la réponse scientifique d'Artemis dans la fenêtre du chat
-        appendAiResponseToChat(data.reply);
-
-    } catch (error) {
-        console.error("Erreur Artemis AI:", error);
-        appendAiResponseToChat("Désolé, Artemis n'a pas pu traiter le tableau suite à une erreur de connexion.");
-    }
+  } catch (error) {
+    console.error("Erreur Artemis AI:", error);
+    appendMessage("assistant", "<strong>Artemis :</strong> Desole, Artemis n'a pas pu traiter le tableau suite a une erreur de connexion.");
+  }
 }
