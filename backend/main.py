@@ -44,33 +44,37 @@ app.include_router(statistics_router)
 app.include_router(trends_router)
 app.include_router(reports_router)
 app.include_router(chat_router)
-
-
 # ==========================================================
 # GESTION DU DASHBOARD GRAPHIQUE (Interface Utilisateur)
 # ==========================================================
 
-# Définition du chemin vers le dossier contenant ton dashboard (HTML, CSS, JS)
-# Si ton dossier est situé au même niveau que 'backend', on remonte d'un cran
-DASHBOARD_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "app dashboard")
+# BASE_DIR correspond à la racine de ton projet 'Artemis detective' sur Render
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+# Le chemin exact configuré selon l'arborescence réelle de ton GitHub
+DASHBOARD_DIR = os.path.join(BASE_DIR, "frontend", "app dashboard")
 
 if os.path.exists(DASHBOARD_DIR):
-    # On monte le dossier pour charger automatiquement les fichiers style.css, app.js, etc.
+    # On monte le dossier virtuel pour charger style.css, app.js, etc.
     app.mount("/interface", StaticFiles(directory=DASHBOARD_DIR), name="interface")
 
-    # Route racine : Au lieu d'afficher du JSON brut, elle sert le fichier index.html du dashboard !
+    # Route racine : Sert le fichier index.html de ton dossier 'frontend/app dashboard' !
     @app.get("/")
     def serve_dashboard():
         index_path = os.path.join(DASHBOARD_DIR, "index.html")
         if os.path.exists(index_path):
             return FileResponse(index_path)
-        return {"application": "Artemis Earth Detective", "status": "online", "message": "index.html introuvable dans le dossier dashboard"}
+        return {
+            "application": "Artemis Earth Detective",
+            "status": "online",
+            "message": "index.html introuvable dans le dossier frontend/app dashboard"
+        }
 else:
-    # Route de secours si le nom du dossier sur ton PC est différent
+    # Route de secours si le dossier n'est pas détecté au démarrage du serveur
     @app.get("/")
     def root_backup():
         return {
             "application": "Artemis Earth Detective",
             "status": "online",
-            "warning": f"Le dossier '{DASHBOARD_DIR}' n'a pas été détecté sur le serveur."
+            "warning": f"Le dossier attendu '{DASHBOARD_DIR}' n'a pas été détecté sur le serveur Render."
         }
