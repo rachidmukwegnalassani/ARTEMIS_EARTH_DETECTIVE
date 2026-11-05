@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
 # backend/utils/time_helpers.py
+
 from typing import List, Dict, Any
+
 
 def filter_time_series_by_range(data_points: List[Dict[str, Any]], start_date: str, end_date: str) -> List[Dict[str, Any]]:
     """
@@ -9,10 +12,10 @@ def filter_time_series_by_range(data_points: List[Dict[str, Any]], start_date: s
     filtered_data = []
     for point in data_points:
         timestamp = point.get("timestamp", point.get("date", ""))
-        # Comparaison de chaînes ISO standardisées (efficace et rapide)
         if timestamp and start_date <= timestamp <= end_date:
             filtered_data.append(point)
     return filtered_data
+
 
 def format_timestamp_for_ui(iso_string: str) -> str:
     """
@@ -32,6 +35,7 @@ def format_timestamp_for_ui(iso_string: str) -> str:
     except Exception:
         return iso_string
 
+
 def aggregate_data_by_period(data_points: List[Dict[str, Any]], period: str = "daily") -> Dict[str, float]:
     """
     Agrège les valeurs scientifiques (moyenne brute) par jour ou par mois 
@@ -47,8 +51,7 @@ def aggregate_data_by_period(data_points: List[Dict[str, Any]], period: str = "d
         if not timestamp or val is None:
             continue
             
-        # Définition de la clé selon la période désirée
-        key = timestamp[:10] if period == "daily" else timestamp[:7] # AAAA-MM-JJ ou AAAA-MM
+        key = timestamp[:10] if period == "daily" else timestamp[:7]
         
         aggregated[key] = aggregated.get(key, 0.0) + float(val)
         counts[key] = counts.get(key, 0) + 1

@@ -1,13 +1,21 @@
+# -*- coding: utf-8 -*-
+
+import pandas as pd
+from typing import Dict, Any
+
+
 class XlsxParser:
+
     @staticmethod
     def parse_sheets(file_path: str) -> dict:
-        """Extrait la liste des feuilles et prépare l'importation de fichiers Excel"""
+        """Lit un fichier Excel et extrait les données de la première feuille."""
         try:
+            df = pd.read_excel(file_path, sheet_name=0)
             return {
                 "status": "success",
-                "target_file": file_path,
-                "sheets_detected": ["NASA_Data", "Environmental_Indicators"],
-                "extracted_rows": 0
+                "total_records": len(df),
+                "columns": list(df.columns),
+                "data": df.to_dict(orient="records")
             }
         except Exception as e:
-            return {"status": "error", "message": f"Erreur Excel : {str(e)}"}
+            return {"status": "error", "message": f"Échec de l'analyse Excel Pandas : {str(e)}"}

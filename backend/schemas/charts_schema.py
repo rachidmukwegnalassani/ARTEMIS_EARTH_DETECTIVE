@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
 # backend/schemas/charts_schema.py
+
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
+
 
 class ChartQuerySchema(BaseModel):
     metric: str = Field(..., example="Air Temperature")
@@ -8,13 +11,8 @@ class ChartQuerySchema(BaseModel):
     end_date: str = Field(..., example="2026-11-02")
     chart_type: Optional[str] = Field("line", example="line")
 
-class ChartDatasetElement(BaseModel):
-    label: str
-    data: List[float]
-    borderColor: str
-    backgroundColor: str
-    fill: bool
 
 class ChartResponseSchema(BaseModel):
-    labels: List[str]
-    datasets: List[ChartDatasetElement]
+    status: str = Field(..., example="success")
+    count: int = Field(..., example=1)
+    charts: List[Dict[str, Any]] = Field(default=[], description="Liste des configurations de graphiques de session")

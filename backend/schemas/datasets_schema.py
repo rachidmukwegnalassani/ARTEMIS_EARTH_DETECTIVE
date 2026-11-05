@@ -1,25 +1,21 @@
+# -*- coding: utf-8 -*-
 # backend/schemas/dataset.py
+
 from pydantic import BaseModel, Field
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
+
 
 class DatasetBase(BaseModel):
-    name: str = Field(..., example="Anomalies Thermiques Gabon")
-    description: Optional[str] = Field(None, example="Données composites issues de la NASA")
-    project: str = Field(..., example="Artemis Earth Detective")  # Assure la compatibilité avec les routes
+    name: str = Field(..., example="MODIS Aqua - Sea Surface Temperature")
+    description: Optional[str] = Field(None, example="Mesures quotidiennes de la température des océans")
+    project: str = Field(..., example="Artemis Earth Detective")
+
 
 class DatasetCreate(DatasetBase):
     pass
 
-class DatasetUpdate(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
-    project: Optional[str] = None
 
 class DatasetResponse(DatasetBase):
-    id: int
-    filename: str
-    file_path: str
-    metadata_fields: Optional[Dict[str, Any]] = None
-
-    class Config:
-        from_attributes = True  # Permet de lire directement les objets de la base de données (ORMs)
+    id: str = Field(..., example="MODIS_SST_L3")
+    status: str = Field(..., example="available")
+    details: Dict[str, Any]

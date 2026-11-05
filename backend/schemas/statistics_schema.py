@@ -1,12 +1,20 @@
+# -*- coding: utf-8 -*-
 # backend/schemas/statistics_schema.py
+
 from pydantic import BaseModel, Field
-from typing import List, Any
+from typing import Dict, Any, Optional
+
 
 class TableDataSchema(BaseModel):
-    headers: List[str] = Field(..., example=["Indicateur Statistique", "Valeur Calculée"])
-    rows: List[List[Any]] = Field(..., example=[["Moyenne Générale", "24.50"], ["Maximum Détecté", "31.20"]])
+    count: int = Field(..., example=120)
+    mean: float = Field(..., example=24.50)
+    median: float = Field(..., example=24.20)
+    minimum: float = Field(..., example=12.10)
+    maximum: float = Field(..., example=35.60)
+    std: float = Field(..., example=2.15)
+    interpretation: Optional[str] = Field(None, example="La tendance observée est statistiquement significative.")
+
 
 class LiveStatisticsResponseSchema(BaseModel):
-    status: str
-    calculated_indicators: int
-    table: TableDataSchema
+    status: str = Field(..., example="success")
+    statistics: TableDataSchema

@@ -1,13 +1,15 @@
+# -*- coding: utf-8 -*-
 # backend/schemas/reports_schema.py
+
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
+
 class ReportGenerationSchema(BaseModel):
-    title: str = Field(..., example="Rapport d'Anomalie Climatique - Ray Detective")
-    summary: str
-    detected_anomalies: List[str] = []
-    author: Optional[str] = Field("Artemis AI", example="Artemis AI")
+    title: str = Field(..., example="Rapport d'Anomalie Climatique")
+    content_summary: str = Field(..., description="Résumé textuel ou conclusions scientifiques.")
+
 
 class ExportConfigSchema(BaseModel):
-    format: str = Field("txt", example="txt")
+    format: str = Field("markdown", example="markdown")
     include_history: bool = True
