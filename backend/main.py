@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 # Importation de nos routes d'API durcies
 from backend.api.health import router as health_router
@@ -17,10 +18,15 @@ from backend.api.trends import router as trends_router
 from backend.api.reports import router as reports_router
 from backend.api.chat import router as chat_router
 
+APP_HOST = os.getenv("APP_HOST", "0.0.0.0")
+APP_PORT = int(os.getenv("PORT", os.getenv("APP_PORT", "8000")))
+
 app = FastAPI(
     title="Artemis Earth Detective",
     description="Artificial Intelligence platform for Earth System Trend Detection and Analysis.",
-    version="1.0.0"
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
 # Configuration CORS pour autoriser les requêtes de Vercel
@@ -44,37 +50,39 @@ app.include_router(statistics_router)
 app.include_router(trends_router)
 app.include_router(reports_router)
 app.include_router(chat_router)
+
 # ==========================================================
 # GESTION DU DASHBOARD GRAPHIQUE (Interface Utilisateur)
 # ==========================================================
-
-# BASE_DIR correspond à la racine de ton projet 'Artemis detective' sur Render
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+FRONTEND_CANDIDATES = [
+    os.path.join(BASE_DIR, "frontend", "app-dashboard"),
+    os.path.join(BASE_DIR, "frontend", "app dashboard"),
+    os.path.join(BASE_DIR, "frontend"),
+]
 
-# Le chemin exact configuré selon l'arborescence réelle de ton GitHub
-DASHBOARD_DIR = os.path.join(BASE_DIR, "frontend", "app dashboard")
+DASHBOARD_DIR = next((path for path in FRONTEND_CANDIDATES if os.path.isdir(path)), None)
 
-if os.path.exists(DASHBOARD_DIR):
-    # On monte le dossier virtuel pour charger style.css, app.js, etc.
+if DASHBOARD_DIR:
     app.mount("/interface", StaticFiles(directory=DASHBOARD_DIR), name="interface")
 
-    # Route racine : Sert le fichier index.html de ton dossier 'frontend/app dashboard' !
     @app.get("/")
     def serve_dashboard():
         index_path = os.path.join(DASHBOARD_DIR, "index.html")
         if os.path.exists(index_path):
             return FileResponse(index_path)
-        return {
-            "application": "Artemis Earth Detective",
-            "status": "online",
-            "message": "index.html introuvable dans le dossier frontend/app dashboard"
-        }
+        return {"application": "Artemis Earth Detective", "status": "online", "message": "index.html introuvable dans le dossier frontend."}
 else:
-    # Route de secours si le dossier n'est pas détecté au démarrage du serveur
     @app.get("/")
     def root_backup():
         return {
             "application": "Artemis Earth Detective",
             "status": "online",
-            "warning": f"Le dossier attendu '{DASHBOARD_DIR}' n'a pas été détecté sur le serveur Render."
+            "warning": "Le dossier frontend n'a pas été détecté sur le serveur.",
         }
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("backend.main:app", host=APP_HOST, port=APP_PORT, reload=True)
