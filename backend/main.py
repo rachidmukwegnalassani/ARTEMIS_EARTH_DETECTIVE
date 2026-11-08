@@ -21,7 +21,7 @@ app = FastAPI(
     title="Artemis Earth Detective",
     description="Artificial Intelligence platform for Earth System Trend Detection and Analysis.",
     version="1.0.0"
-)
+) 
 
 # Configuration CORS pour autoriser les requêtes de Vercel
 app.add_middleware(
