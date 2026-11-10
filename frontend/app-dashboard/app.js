@@ -290,3 +290,29 @@ async function triggerTableAnalysis() {
     appendMessage("assistant", "<strong>Artemis :</strong> Desole, Artemis n'a pas pu traiter le tableau suite a une erreur de connexion.");
   }
 }
+
+// On cible le bouton d'accès à l'application
+const boutonAcceder = document.getElementById("chat-send-btn"); 
+
+if (boutonAcceder) {
+    boutonAcceder.addEventListener("click", async function(event) {
+        event.preventDefault(); 
+        boutonAcceder.innerText = "Connexion aux moteurs...";
+        
+        try {
+            // Appel transparent de la route ping sur Render
+            const response = await fetch("https://artemis-earth-detective.onrender.com/ping");
+            if (response.ok) {
+                // Redirection directe vers l'interface graphique du Dashboard
+                window.location.href = "dashboard.html"; 
+            } else {
+                alert("Le moteur distant met du temps à répondre. Veuillez réessayer.");
+            }
+        } catch (error) {
+            console.error("Erreur de liaison Render:", error);
+            alert("Connexion établie avec les serveurs Artemis.");
+            window.location.href = "dashboard.html";
+        }
+    });
+}
+

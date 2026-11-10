@@ -31,7 +31,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+# --- ROUTE ESSENTIELLE POUR LE BOUTON DÉPLOYÉ ---
+@app.get("/ping")
+def ping_moteur():
+    """
+    Cette route intercepte le clic du bouton 'Accéder à l'application'.
+    Elle réveille instantanément le serveur Render et valide la connexion
+    pour charger les graphiques et le chatbot sans aucun terminal local.
+    """
+    return {
+        "status": "online",
+        "moteur": "Artemis Earth Detective",
+        "message": "Connexion établie avec succès. Chargement des données NASA..."
+    }
 # ==========================================================
 # API ROUTERS (Liaison officielle des modules)
 # ==========================================================
