@@ -64,7 +64,7 @@ app.include_router(chat_router)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Le chemin exact configuré selon l'arborescence réelle de ton GitHub
-DASHBOARD_DIR = os.path.join(BASE_DIR, "frontend", "app dashboard")
+DASHBOARD_DIR = os.path.join(BASE_DIR, "frontend", "app-dashboard")
 
 if os.path.exists(DASHBOARD_DIR):
     # On monte le dossier virtuel pour charger style.css, app.js, etc.
