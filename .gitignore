@@ -5,3 +5,5 @@ ollama/
 venv/
 __pycache__/
 .vscode/
+backend/temp-uploads/*
+!backend/temp-uploads/.gitkeep

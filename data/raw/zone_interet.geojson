@@ -1,0 +1,25 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nom": "Zone d'étude Libreville - Akanda",
+        "pays": "Gabon",
+        "projet": "ARTEMIS_EARTH_DETECTIVE"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [9.40, 0.35],
+            [9.52, 0.35],
+            [9.52, 0.58],
+            [9.40, 0.58],
+            [9.40, 0.35]
+          ]
+        ]
+      }
+    }
+  ]
+}
