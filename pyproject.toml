@@ -33,7 +33,7 @@ dependencies = [
     "python-multipart",
     "pydantic",
     "aiofiles>=25.1.0",
-    "fastapi[standard]"
+    "fastapi[standard]",
 ]
 
 [tool.setuptools]
