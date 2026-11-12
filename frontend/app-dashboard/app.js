@@ -23,6 +23,8 @@ const nasaVariables = {
   geodesie: ["Ground Deformation", "Vertical Displacement", "Land Subsidence", "Topography", "Elevation"]
 };
 
+let currentChatFile = null;
+
 document.addEventListener("DOMContentLoaded", () => {
   initCategorySwitch();
   initAppEventListeners();
@@ -119,95 +121,110 @@ function setMapState(mode, text) {
 }
 
 function initUploadButton() {
-  const uploadBtn = document.getElementById('chat-upload-btn');
-  const fileInput = document.getElementById('chat-file-input');
+  const uploadBtn = document.getElementById("chat-upload-btn");
+  const fileInput = document.getElementById("chat-file-input");
 
   if (!uploadBtn || !fileInput) {
     return;
   }
 
-  uploadBtn.addEventListener('click', () => {
+  uploadBtn.addEventListener("click", () => {
     fileInput.click();
   });
 
-  fileInput.addEventListener('change', (e) => {
+  fileInput.addEventListener("change", async (e) => {
     if (e.target.files.length > 0) {
-      const filename = e.target.files[0].name;
+      currentChatFile = e.target.files;
+      const filename = currentChatFile.name;
       appendLog(`> Fichier selectionne pour le chat : ${filename}`, "info");
-      appendMessage("user", `<strong>Systeme :</strong> Fichier joint associe : ${filename}`);
+      appendMessage("user", `<strong>Systeme :</strong> Fichier joint : ${filename}`);
+
+      const formData = new FormData();
+      formData.append("file", currentChatFile);
+
+      try {
+        const uploadResp = await fetch(`${BACKEND_URL}/chat/upload`, {
+          method: "POST",
+          body: formData
+        });
+        if (uploadResp.ok) {
+          const uploadData = await uploadResp.json();
+          appendMessage("assistant", `<strong>Artemis :</strong> ${uploadData.message}`);
+          appendLog(`> [IA] Fichier ${filename} indexe en memoire.`, "success");
+        }
+      } catch (err) {
+        console.error(err);
+        appendLog("[Error] Echec de l'envoi du fichier au moteur IA.", "error");
+      }
     }
   });
 }
 
 function initAppEventListeners() {
   const runBtn = document.getElementById("run-analysis-btn");
-  if (!runBtn) {
-    return;
-  }
+  if (runBtn) {
+    runBtn.addEventListener("click", async () => {
+      const categorySelect = document.getElementById("category-select");
+      const variableSelect = document.getElementById("variable-select");
+      const fileInput = document.getElementById("geo-file");
+      const selectedVar = variableSelect?.options[variableSelect.selectedIndex]?.textContent || "Variable cible";
+      const file = fileInput?.files?.[0];
+      const filename = file ? file.name.toLowerCase() : "nasa_dataset_global.nc";
+      const isMapData = /\.(tiff?|geojson|json|shp|nc)$/i.test(filename);
 
-  runBtn.addEventListener("click", async () => {
-    const categorySelect = document.getElementById("category-select");
-    const variableSelect = document.getElementById("variable-select");
-    const fileInput = document.getElementById("geo-file");
-    const selectedVar = variableSelect?.options[variableSelect.selectedIndex]?.textContent || "Variable cible";
-    const file = fileInput?.files?.[0];
-    const filename = file ? file.name.toLowerCase() : "nasa_dataset_global.nc";
-    const isMapData = /\.(tiff?|geojson|json|shp|nc)$/i.test(filename);
-
-    appendLog(`> Ingestion de la variable : ${selectedVar}...`, "info");
-
-    if (isMapData) {
-      setMapState("loading", "Traitement de la matrice geographique...");
-    } else {
-      setMapState("default", "Donnees non cartographiques detectees.");
-      appendLog("> [Pipeline] Format non-cartographique. Activation directe des modules graphiques et statistiques.", "info");
-    }
-
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/analyze`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          variable: selectedVar,
-          category: categorySelect?.value || "atmosphere",
-          is_map: isMapData,
-          filename
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erreur API : ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      document.getElementById("metric-output").innerHTML = `
-        <p>Moyenne observee : <strong>${data.stats?.mean ?? "14.23"}</strong></p>
-        <p>Variance / Ecart : <strong>${data.stats?.variance ?? "0.84"}</strong></p>
-        <p class="status-inline">Statut : <strong>Donnees indexees</strong></p>
-      `;
-
-      document.getElementById("chart-output").innerHTML = `
-        <p>${data.ai_expert_report || "Modelisation temporelle generee. Une tendance anormale est identifiee sur les cycles recents."}</p>
-      `;
+      appendLog(`> Ingestion de la variable : ${selectedVar}...`, "info");
 
       if (isMapData) {
-        setMapState("success", "Matrice spatiale injectee sur la carte.");
+        setMapState("loading", "Traitement de la matrice geographique...");
+      } else {
+        setMapState("default", "Donnees non cartographiques detectees.");
+        appendLog("> [Pipeline] Format non-cartographique. Activation directe des modules graphiques et statistiques.", "info");
       }
 
-      appendLog("> [IA] Analyse terminee. Rapport envoye a l'Assistant GPT.", "success");
-      appendMessage(
-        "assistant",
-        `<strong>Artemis GPT :</strong> J'ai recu les analyses graphiques et statistiques pour la variable <em>${selectedVar}</em>. Le rapport indique une correlation stable mais des variations a analyser. Que souhaitez-vous que je vous explique en priorite ?`
-      );
-    } catch (error) {
-      console.error(error);
-      appendLog("[Error] Probleme lors du traitement de la donnee par l'API.", "error");
-      setMapState("default", "Le traitement a echoue, veuillez reessayer.");
-      document.getElementById("metric-output").innerHTML = "<p>Une erreur reseau ou backend est survenue.</p>";
-      document.getElementById("chart-output").innerHTML = "<p>Le rapport a ete interrompu.</p>";
-    }
-  });
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/analyze`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            variable: selectedVar,
+            category: categorySelect?.value || "atmosphere",
+            is_map: isMapData,
+            filename
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erreur API : ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        document.getElementById("metric-output").innerHTML = `
+          <p>Moyenne observee : <strong>${data.stats?.mean ?? "N/A"}</strong></p>
+          <p>Variance / Ecart : <strong>${data.stats?.variance ?? "N/A"}</strong></p>
+          <p class="status-inline">Statut : <strong>Donnees indexees</strong></p>
+        `;
+
+        document.getElementById("chart-output").innerHTML = `
+          <p>${data.ai_expert_report || "Modelisation temporelle generee."}</p>
+        `;
+
+        if (isMapData) {
+          setMapState("success", "Matrice spatiale injectee sur la carte.");
+        }
+
+        appendLog("> [IA] Analyse terminee.", "success");
+        appendMessage(
+          "assistant",
+          `<strong>Artemis :</strong> Analyse terminee pour <em>${selectedVar}</em>. Posez-moi vos questions sur ces resultats.`
+        );
+      } catch (error) {
+        console.error(error);
+        appendLog("[Error] Probleme lors du traitement de la donnee par l'API.", "error");
+        setMapState("default", "Le traitement a echoue, veuillez reessayer.");
+      }
+    });
+  }
 
   const chatInput = document.getElementById("chat-input");
   const chatSendBtn = document.getElementById("chat-send-btn");
@@ -226,7 +243,7 @@ function initAppEventListeners() {
     chatInput.value = "";
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/chat`, {
+      const response = await fetch(`${BACKEND_URL}/chat/send_message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message })
@@ -237,10 +254,11 @@ function initAppEventListeners() {
       }
 
       const data = await response.json();
-      appendMessage("assistant", `<strong>Artemis :</strong> ${data.response || "Je n'ai pas pu generer de reponse."}`);
+      const replyText = data.reply || data.analysis_result || data.response || "Je n'ai pas pu generer de reponse.";
+      appendMessage("assistant", `<strong>Artemis :</strong> ${replyText}`);
     } catch (error) {
       console.error(error);
-      appendMessage("assistant", "<strong>Artemis :</strong> Une erreur est survenue lors de l'envoi du message.");
+      appendMessage("assistant", "<strong>Artemis :</strong> Une erreur est survenue lors de la communication avec le serveur.");
     }
   };
 
@@ -252,67 +270,3 @@ function initAppEventListeners() {
     }
   });
 }
-
-async function triggerTableAnalysis() {
-  const tableElement = document.getElementById("table-statistiques-globales");
-  if (!tableElement) return;
-
-  let headers = [];
-  let rows = [];
-
-  tableElement.querySelectorAll("th").forEach(th => headers.push(th.innerText.trim()));
-
-  tableElement.querySelectorAll("tbody tr").forEach(tr => {
-    let rowData = [];
-    tr.querySelectorAll("td").forEach(td => rowData.push(td.innerText.trim()));
-    if (rowData.length > 0) rows.push(rowData);
-  });
-
-  const tableDataPayload = { headers: headers, rows: rows };
-
-  appendMessage("user", "<strong>Systeme :</strong> [Demande d'analyse automatique du tableau statistique en cours...]");
-
-  try {
-    const response = await fetch('/api/chat/analyze-dashboard', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ui_state: { table_data: tableDataPayload },
-        user_message: "Analyse en detail les variables de ce tableau statistique. Fais ressortir les anomalies."
-      })
-    });
-
-    const data = await response.json();
-    appendMessage("assistant", `<strong>Artemis :</strong> ${data.reply}`);
-
-  } catch (error) {
-    console.error("Erreur Artemis AI:", error);
-    appendMessage("assistant", "<strong>Artemis :</strong> Desole, Artemis n'a pas pu traiter le tableau suite a une erreur de connexion.");
-  }
-}
-
-// On cible le bouton d'accès à l'application
-const boutonAcceder = document.getElementById("chat-send-btn"); 
-
-if (boutonAcceder) {
-    boutonAcceder.addEventListener("click", async function(event) {
-        event.preventDefault(); 
-        boutonAcceder.innerText = "Connexion aux moteurs...";
-        
-        try {
-            // Appel transparent de la route ping sur Render
-            const response = await fetch("https://artemis-earth-detective.onrender.com/ping");
-            if (response.ok) {
-                // Redirection directe vers l'interface graphique du Dashboard
-                window.location.href = "dashboard.html"; 
-            } else {
-                alert("Le moteur distant met du temps à répondre. Veuillez réessayer.");
-            }
-        } catch (error) {
-            console.error("Erreur de liaison Render:", error);
-            alert("Connexion établie avec les serveurs Artemis.");
-            window.location.href = "dashboard.html";
-        }
-    });
-}
-

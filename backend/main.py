@@ -90,3 +90,7 @@ else:
             "status": "online",
             "warning": f"Le dossier attendu '{DASHBOARD_DIR}' n'a pas été détecté sur le serveur Render."
         }
+        
+@app.get("/ping")
+def ping():
+    return {"status": "ok", "message": "Moteur Artemis actif"}

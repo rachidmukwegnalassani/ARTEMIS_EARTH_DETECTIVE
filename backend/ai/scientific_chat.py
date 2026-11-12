@@ -1,72 +1,103 @@
 # -*- coding: utf-8 -*-
 
+import json
+from pathlib import Path
+import pandas as pd
 from backend.ai.context_manager import ContextManager
 from backend.ai.file_analyzer import FileAnalyzer
 from backend.ai.statistics_analyzer import StatisticsAnalyzer
-from backend.ai.prompts import STATISTICAL_TEMPLATE, SCIENTIFIC_SUMMARY_TEMPLATE
 
 
 class ScientificChat:
 
     def __init__(self):
-        # Gestionnaire de contexte pour suivre la variable (ex: Température) ou la catégorie (ex: Climat)
         self.context = ContextManager()
 
-    def analyze_file(self, filename: str) -> dict:
-        """
-        Détecte le format, extrait les données brutes et calcule automatiquement
-        le rapport statistique complet de la NASA pour le contexte du chat.
-        """
-        # 1. Détection du format via le FileAnalyzer existant
-        file_format = FileAnalyzer.detect_format(filename)
-        
-        # 2. Simulation d'extraction des données du fichier (à lier avec ton loader de fichiers de la NASA)
-        # Supposons que nous extrayons une série de données numériques de test :
-        extracted_values = [14.2, 14.5, 14.8, 15.1, 13.9, 15.4, 16.2]  # Exemple de série temporelle
-        
-        # 3. Calcul des statistiques réelles avec notre nouvel analyseur Pandas
-        stats = StatisticsAnalyzer.compute(extracted_values)
-        signif = StatisticsAnalyzer.significance(p_value=0.03)  # Exemple de p-value calculée
-        
-        # 4. Sauvegarde des statistiques dans le contexte global de la discussion
-        self.context.current_statistics = {**stats, **signif}
-        self.context.current_file = filename
-        
-        return {
-            "filename": filename,
-            "format": file_format,
-            "statistics": self.context.current_statistics,
-            "status": "File successfully analyzed and contextualized"
-        }
+    def _extract_real_values(self, filepath: Path) -> tuple[list[float], str]:
+        ext = filepath.suffix.lower()
 
-    def answer_question(self, question: str) -> dict:
-        """
-        Génère une réponse intelligente en injectant les statistiques de l'analyseur
-        directement dans les templates de prompts IA pour le Chat Artemis.
-        """
-        # Vérification si des statistiques de fichier de la NASA sont disponibles dans le chat
-        stats = getattr(self.context, "current_statistics", None)
-        
-        if stats and "mean" in stats:
-            # Injection dynamique de nos calculs Pandas dans le template de prompt qu'on a corrigé juste avant
-            prompt_ready = STATISTICAL_TEMPLATE.format(
-                count=stats["count"],
-                mean=f"{stats['mean']:.2f}",
-                median=f"{stats['median']:.2f}",
-                minimum=f"{stats['minimum']:.2f}",
-                maximum=f"{stats['maximum']:.2f}",
-                std=f"{stats['std']:.2f}",
-                interpretation=stats["interpretation"]
-            )
-            # Ici viendra l'appel final à ton LLM (OpenAI / Anthropic / local) : llm.generate(prompt_ready)
-            ai_response = f"[Artemis IA basé sur les statistiques réelles] : {stats['interpretation']}"
+        if ext == ".csv":
+            df = pd.read_csv(filepath)
+        elif ext in (".xlsx", ".xls"):
+            df = pd.read_excel(filepath)
+        elif ext in (".json", ".geojson"):
+            with open(filepath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict) and "features" in data:
+                records = [feat.get("properties", {}) for feat in data["features"]]
+                df = pd.DataFrame(records)
+            elif isinstance(data, list):
+                df = pd.DataFrame(data)
+            else:
+                df = pd.json_normalize(data)
         else:
-            ai_response = "Je n'ai pas encore de données statistiques à analyser. Veuillez charger un fichier de la NASA pour commencer l'enquête."
+            raise ValueError(f"Extraction numérique directe non prise en charge pour le format {ext}.")
+
+        numeric_df = df.select_dtypes(include=["number"]).dropna(axis=1, how="all")
+        if numeric_df.empty:
+            raise ValueError("Aucune colonne numérique exploitable n'a été trouvée dans ce fichier.")
+
+        target_col = numeric_df.columns[0]
+        values = numeric_df[target_col].dropna().astype(float).tolist()
+        if not values:
+            raise ValueError(f"La colonne '{target_col}' ne contient aucune valeur valide.")
+
+        return values, str(target_col)
+
+    def analyze_file(self, filepath_str: str) -> dict:
+        filepath = Path(filepath_str)
+        if not filepath.exists():
+            raise FileNotFoundError(f"Le fichier introuvable : {filepath.name}")
+
+        file_format = FileAnalyzer.detect_format(filepath.name)
+        extracted_values, variable_name = self._extract_real_values(filepath)
+
+        stats = StatisticsAnalyzer.compute(extracted_values)
+        signif = StatisticsAnalyzer.significance(p_value=0.05)
+
+        self.context.current_statistics = {**stats, **signif}
+        self.context.current_file = filepath.name
+        self.context.current_variable = variable_name
 
         return {
-            "question": question,
-            "variable": self.context.current_variable,
-            "category": self.context.current_category,
-            "prompt_used": prompt_ready if stats else None,
-            "answer": ai_response
+            "filename": filepath.name,
+            "format": file_format,
+            "variable": variable_name,
+            "statistics": self.context.current_statistics,
+            "status": "Analyse réelle terminée"
         }
+
+    def answer_question(self, question: str) -> str:
+        clean_q = question.strip().lower()
+        salutations = ("bonjour", "bonsoir", "salut", "hello", "hi", "coucou")
+
+        if any(clean_q.startswith(mot) for mot in salutations):
+            return (
+                "Bonjour ! Je suis Artemis IA, votre assistant d'analyse des données de la NASA. "
+                "Je suis actif. Importez un fichier réel (.csv, .xlsx, .geojson, .json) pour que j'en extraie "
+                "les statistiques et réponde à vos questions."
+            )
+
+        stats = getattr(self.context, "current_statistics", None)
+        filename = getattr(self.context, "current_file", None)
+        variable = getattr(self.context, "current_variable", "la variable étudiée")
+
+        if not stats or "mean" not in stats:
+            return (
+                "Aucun fichier de données n'a encore été analysé. "
+                "Veuillez charger un jeu de données réel depuis le panneau de gauche."
+            )
+
+        if "moyenne" in clean_q:
+            return f"Pour '{filename}' (variable : {variable}), la moyenne réelle calculée est de {stats['mean']:.2f}."
+        if "minimum" in clean_q or "min" in clean_q:
+            return f"La valeur minimale observée sur '{variable}' dans '{filename}' est de {stats['minimum']:.2f}."
+        if "maximum" in clean_q or "max" in clean_q:
+            return f"La valeur maximale observée sur '{variable}' dans '{filename}' est de {stats['maximum']:.2f}."
+
+        return (
+            f"Synthèse réelle sur '{filename}' (variable : {variable}, {stats['count']} mesures) : "
+            f"Moyenne = {stats['mean']:.2f}, Médiane = {stats['median']:.2f}, "
+            f"Min = {stats['minimum']:.2f}, Max = {stats['maximum']:.2f}, Écart-type = {stats['std']:.2f}. "
+            f"{stats['interpretation']}"
+        )
